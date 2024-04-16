@@ -1,38 +1,43 @@
 import cv2
 import imageio
-import os  # Import the os module
+import os
+import moviepy.editor as mp
 
-def afficher_alphabet(texte, target_width, target_height):
-  """
-  Fonction pour afficher les animations GIF des lettres d'un texte donné avec un délai entre chaque lettre et redimensionnement des frames.
-
-  Args:
-      texte (str): Le texte à traduire en animations GIF d'alphabet.
-      target_width (int): Largeur souhaitée pour les frames.
-      target_height (int): Hauteur souhaitée pour les frames.
-  """
-  for lettre in texte.lower():
-    if lettre.isalpha():
-      chemin_image = f"Reverse/{lettre}.gif"
-      if os.path.exists(chemin_image):
-        try:
-          animation = imageio.get_reader(chemin_image)
-          for frame in animation:
-            # Resize the frame
-            resized_frame = cv2.resize(frame, (target_width, target_height))
-            cv2.imshow(lettre, resized_frame)
-            cv2.waitKey(5000)  # Délai de 100 millisecondes après chaque frame
-        except (FileNotFoundError, IndexError) as e:
-          print(f"Une erreur est survenue : {e}")
-      else:
-        print(f"Animation GIF introuvable pour la lettre '{lettre}'")
-    else:
-      print(f"Le caractère '{lettre}' n'est pas une lettre de l'alphabet")
+def afficher_alphabet(texte, target_width, target_height, delay_between_letters):
+    frames = [] 
+    for lettre in texte.lower():
+        if lettre.isalpha():
+            chemin_image = f"Reverse/{lettre}.gif"
+            if os.path.exists(chemin_image):
+                try:
+                    animation = imageio.get_reader(chemin_image)
+                    for frame in animation:
+                        resized_frame = cv2.resize(frame, (target_width, target_height))
+                        frames.append(resized_frame)
+                except (FileNotFoundError, IndexError) as e:
+                    print(f"Une erreur est survenue : {e}")
+            else:
+                print(f"Animation GIF introuvable pour la lettre '{lettre}'")
+        else:
+            print(f"Le caractère '{lettre}' n'est pas une lettre de l'alphabet")
+    
+    if frames:
+        output_frames = []
+        for frame in frames:
+            for _ in range(delay_between_letters):
+                output_frames.append(frame)
+        
+        # Write frames to video
+        output_video_path = "alphabet_animation.mp4"
+        out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 10, (target_width, target_height))
+        for frame in output_frames:
+            out.write(frame)
+        out.release()
+        print(f"Vidéo créée : {output_video_path}")
 
 # Exemple d'utilisation
 texte = input("Entrez un texte : ")
-target_width = 700  # Exemple de largeur souhaitée
-target_height = 500 # Exemple de hauteur souhaitée
-afficher_alphabet(texte, target_width, target_height)
-
-cv2.destroyAllWindows()  # Fermer toutes les fenêtres à la fin
+target_width = 700  
+target_height = 500 
+delay_between_letters = 30  # Delay in number of frames
+afficher_alphabet(texte, target_width, target_height, delay_between_letters)
