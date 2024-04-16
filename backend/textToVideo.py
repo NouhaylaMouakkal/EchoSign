@@ -7,7 +7,7 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters)
     frames = [] 
     for lettre in texte.lower():
         if lettre.isalpha():
-            chemin_image = f"Reverse/{lettre}.gif"
+            chemin_image = f"../Reverse/{lettre}.gif"
             if os.path.exists(chemin_image):
                 try:
                     animation = imageio.get_reader(chemin_image)
@@ -28,7 +28,7 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters)
                 output_frames.append(frame)
         
         # Write frames to video
-        output_video_path = "alphabet_animation.mp4"
+        output_video_path = "./VideoOutput/alphabet_animation.mp4"
         out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 10, (target_width, target_height))
         for frame in output_frames:
             out.write(frame)
@@ -39,5 +39,5 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters)
 texte = input("Entrez un texte : ")
 target_width = 700  
 target_height = 500 
-delay_between_letters = 30  # Delay in number of frames
+delay_between_letters = 20  # Delay in number of frames
 afficher_alphabet(texte, target_width, target_height, delay_between_letters)
