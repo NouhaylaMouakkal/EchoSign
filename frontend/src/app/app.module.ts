@@ -8,6 +8,8 @@ import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { SignTotextComponent } from './sign-totext/sign-totext.component';
 import { TextTosignComponent } from './text-tosign/text-tosign.component';
+import { HeaderComponent } from './shared/header/header.component';
+import { FooterComponent } from './shared/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { TextTosignComponent } from './text-tosign/text-tosign.component';
     AboutComponent,
     ContactComponent,
     SignTotextComponent,
-    TextTosignComponent
+    TextTosignComponent,
+    HeaderComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
