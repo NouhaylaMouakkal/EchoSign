@@ -11,8 +11,6 @@ import { ContactComponent } from './contact/contact.component';
 const routes: Routes = [
   { path: 'sign_traduction', component: SignTotextComponent },
   { path: 'text_traduction', component: TextTosignComponent },
-  // { path: 'header', component: HeaderComponent },
-  // { path: 'footer', component: FooterComponent },
   { path: 'home', component: HomeComponent },
   { path: 'about', component: AboutComponent },
   { path: 'contact', component: ContactComponent },
