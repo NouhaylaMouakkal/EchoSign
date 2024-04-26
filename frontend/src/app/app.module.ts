@@ -10,6 +10,7 @@ import { SignTotextComponent } from './sign-totext/sign-totext.component';
 import { TextTosignComponent } from './text-tosign/text-tosign.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { WebcamModule } from 'ngx-webcam';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { FooterComponent } from './shared/footer/footer.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    WebcamModule
   ],
   providers: [],
   bootstrap: [AppComponent]
