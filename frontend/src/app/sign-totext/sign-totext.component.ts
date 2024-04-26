@@ -8,7 +8,8 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/co
 export class SignTotextComponent implements OnInit, OnDestroy {
   @ViewChild('webcamVideo', { static: true })
   webcamVideo!: ElementRef<HTMLVideoElement>;
-  stream!: MediaStream;
+  stream!: MediaStream | null;
+  isWebcamStarted = false;
 
   constructor() { }
 
@@ -24,7 +25,10 @@ export class SignTotextComponent implements OnInit, OnDestroy {
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         this.stream = stream;
-        this.startWebcam(); // Start webcam once it's initialized
+        if (this.webcamVideo && this.webcamVideo.nativeElement && this.stream) {
+          this.webcamVideo.nativeElement.srcObject = this.stream;
+          this.isWebcamStarted = true;
+        }
       })
       .catch(error => {
         console.error('Error accessing webcam:', error);
@@ -32,15 +36,20 @@ export class SignTotextComponent implements OnInit, OnDestroy {
   }
 
   startWebcam() {
-    if (this.webcamVideo && this.webcamVideo.nativeElement && this.stream) {
-      this.webcamVideo.nativeElement.srcObject = this.stream;
+    if (this.isWebcamStarted) {
+      // Si la webcam est déjà démarrée, l'arrêter d'abord
+      this.stopWebcam();
     }
-   
+
+    // Redémarrer la webcam
+    this.initWebcam();
   }
 
   stopWebcam() {
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());
+      this.stream = null!;
+      this.isWebcamStarted = false;
     }
   }
 }
