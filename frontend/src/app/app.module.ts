@@ -30,7 +30,7 @@ import { InputAudioComponent } from './input-audio/input-audio.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    WebcamModule
+    WebcamModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
