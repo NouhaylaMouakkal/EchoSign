@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .page-container {
+    @apply flex h-screen bg-gray-800 text-white;
+  }
+
+  .left-container {
+    @apply w-1/2 p-8 space-y-6;
+  }
+
+  .output-box .input-box {
+    @apply bg-gray-700 p-4 rounded-lg shadow-lg;
+  }
+
+  .title {
+    @apply text-sm;
+  }
+
+  .translation-display {
+    @apply mt-4 bg-gray-900 p-6 rounded text-lg;
+  }
+
+  .listen-button {
+    @apply mt-4 py-2 px-4 bg-purple-600 rounded hover:bg-purple-700 focus:outline-none;
+  }
+
+  .suggestion {
+    @apply bg-gray-900 p-3 rounded;
+  }
+
+  .right-container {
+    @apply w-1/2 p-8;
+  }
+
+  .webcam-feed {
+    @apply relative bg-gray-900 rounded-lg shadow-lg;
+  }
+
+  .webcam-placeholder, .sign-recognition-overlay {
+    @apply absolute inset-0 flex justify-center items-center;
+  }
+
+  .sign-recognition-overlay {
+    @apply text-xs;
+  }
+}

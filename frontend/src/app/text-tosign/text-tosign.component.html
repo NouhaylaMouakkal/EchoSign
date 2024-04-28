@@ -1,1 +1,48 @@
-<p>text-tosign works!</p>
+<!-- Container for the entire page -->
+<div class="page-container">
+  <!-- Left side container -->
+  <div class="left-container">
+    <div class="output-box">
+      <h2>Your Words in Sign Language</h2>
+        <iframe width="800" 
+                height="500" 
+                src="" 
+                frameborder="0" 
+                allowfullscreen>
+        </iframe>
+    </div>
+  </div>
+  <!-- Right side container -->
+  <div class="right-container">
+    <div class="input-box">
+      <div class="max-w-2xl mx-auto bg-gray-300 shadow-lg rounded-lg overflow-hidden">
+        <div class="p-4" id="chat-messages">
+          <!-- Example audio file (moved above the message example) -->
+          <!-- <app-input-audio></app-input-audio> -->
+          <!-- Example message (moved below the audio file example) -->
+          <!-- <app-input-text></app-input-text> -->
+
+
+          <div *ngFor="let item of inputContent">
+            <ng-container *ngIf="!item.isText">
+              <app-input-audio [itemContent]="item"></app-input-audio>
+            </ng-container>
+            <ng-container *ngIf="item.isText">
+              <app-input-text [itemContent]="item"></app-input-text>
+            </ng-container>
+          </div>
+        </div>
+
+        
+        
+        <!-- Input field, send button, voice recorder -->
+        <div class="flex items-center p-4 bg-gray-300">
+          <input type="text" placeholder="Type your message..." class="flex-grow px-3 py-2 mr-2 border rounded-lg focus:outline-none text-black">
+          <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Send</button>
+          <button class="px-4 py-2 bg-green-500 text-white rounded-lg ml-2">Record</button>
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</div>

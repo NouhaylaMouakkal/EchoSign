@@ -11,6 +11,8 @@ import { TextTosignComponent } from './text-tosign/text-tosign.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { WebcamModule } from 'ngx-webcam';
+import { InputTextComponent } from './input-text/input-text.component';
+import { InputAudioComponent } from './input-audio/input-audio.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { WebcamModule } from 'ngx-webcam';
     SignTotextComponent,
     TextTosignComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    InputTextComponent,
+    InputAudioComponent
   ],
   imports: [
     BrowserModule,
