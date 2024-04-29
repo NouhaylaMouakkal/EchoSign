@@ -1,10 +1,11 @@
+<br><br>
 <!-- Container for the entire page -->
 <div class="page-container">
   <!-- Left side container -->
   <div class="left-container">
-    <div class="output-box">
+    <div class="output-box text-lg font-bold">
       <h2>Your Words in Sign Language</h2>
-        <iframe width="800" 
+        <iframe width="600" 
                 height="500" 
                 src="https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4" 
                 frameborder="0" 
@@ -13,36 +14,24 @@
     </div>
   </div>
   <!-- Right side container -->
-  <div class="right-container">
-    <div class="input-box">
-      <div class="max-w-2xl mx-auto bg-gray-300 shadow-lg rounded-lg overflow-hidden">
-        <div class="p-4" id="chat-messages">
-          <!-- Example audio file (moved above the message example) -->
-          <!-- <app-input-audio></app-input-audio> -->
-          <!-- Example message (moved below the audio file example) -->
-          <!-- <app-input-text></app-input-text> -->
-
-
-          <div *ngFor="let item of inputContent">
-            <ng-container *ngIf="!item.isText">
-              <app-input-audio [itemContent]="item"></app-input-audio>
-            </ng-container>
-            <ng-container *ngIf="item.isText">
-              <app-input-text [itemContent]="item"></app-input-text>
-            </ng-container>
-          </div>
+  <div class="right-container flex-grow md:h-full">
+    <div class="input-box h-full max-w-2xl mx-auto bg-gray-300 shadow-lg rounded-lg overflow-hidden">
+      <div class="p-4 h-full" id="chat-messages">
+        <div *ngFor="let item of inputContent">
+          <ng-container *ngIf="!item.isText">
+            <app-input-audio [itemContent]="item"></app-input-audio>
+          </ng-container>
+          <ng-container *ngIf="item.isText">
+            <app-input-text [itemContent]="item"></app-input-text>
+          </ng-container>
         </div>
-
-        
-        
-        <!-- Input field, send button, voice recorder -->
-        <div class="flex items-center p-4 bg-gray-300">
-          <input type="text" placeholder="Type your message..." class="flex-grow px-3 py-2 mr-2 border rounded-lg focus:outline-none text-black">
-          <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Send</button>
-          <button class="px-4 py-2 bg-green-500 text-white rounded-lg ml-2">Record</button>
-        </div>
+      <!-- Input field, send button, voice recorder -->
+      <div class="flex items-center p-4 bg-gray-300">
+        <input type="text" placeholder="Type your message..." class="flex-grow px-3 py-2 mr-2 border rounded-lg focus:outline-none text-black">
+        <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Send</button>
+        <button class="px-4 py-2 bg-green-500 text-white rounded-lg ml-2">Record</button>
       </div>
-    
     </div>
   </div>
 </div>
+

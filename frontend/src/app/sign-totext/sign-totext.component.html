@@ -1,16 +1,16 @@
-<!-- Container for the entire page -->
+<br><br><br><!-- Container for the entire page -->
 <div class="page-container">
   <!-- Left side container -->
   <div class="left-container">
     <!-- Translation display box -->
     <div class="translation-box">
-      <p class="title">Your Sign Language Translation Appears Here</p>
+      <p class="title text-lg font-bold">Your Sign Language Translation Appears Here</p>
       <div class="translation-display">-</div>
       <button class="listen-button">Listen</button>
     </div>
     <!-- Suggestions box -->
     <div class="suggestions-box">
-      <p class="title">Suggestions</p>
+      <p class="title text-lg font-bold">Suggestions</p>
       <!-- Repeat this div for each suggestion -->
       <div class="suggestion">-</div>
     </div>
@@ -20,16 +20,14 @@
     <div class="webcam-feed">
       <!-- Webcam feed should be inserted here -->
       <video #webcamVideo width="640" height="480" autoplay></video>
-      <br />
+      <!-- <br /> -->
       <!-- Sign language recognition overlay -->
-      <!-- <div class="sign-recognition-overlay my-10">Sign recognition interface here</div> -->
-      <!-- Start and stop buttons -->
-      <div>
+      <!-- <div> -->
         <div class="flex justify-center mt-4">
           <button (click)="startWebcam()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-4" style="width: 320px;">Start</button>
           <button (click)="stopWebcam()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded" style="width: 320px;">Stop</button>
         </div>        
-      </div>
+      <!-- </div> -->
     </div>
   </div>
 </div>

@@ -4,8 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { AboutComponent } from './about/about.component';
-import { ContactComponent } from './contact/contact.component';
 import { SignTotextComponent } from './sign-totext/sign-totext.component';
 import { TextTosignComponent } from './text-tosign/text-tosign.component';
 import { HeaderComponent } from './shared/header/header.component';
@@ -18,8 +16,6 @@ import { InputAudioComponent } from './input-audio/input-audio.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    AboutComponent,
-    ContactComponent,
     SignTotextComponent,
     TextTosignComponent,
     HeaderComponent,
