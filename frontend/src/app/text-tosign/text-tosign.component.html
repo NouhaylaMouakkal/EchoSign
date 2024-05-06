@@ -26,8 +26,9 @@
     <!-- Input for typing message -->
     <div class="p-4 dark flex items-center">
       <div class="flex-1 mr-2">
+        <input type="text" [(ngModel)]="messageContent" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" style="background-color: #555555;">
       </div>
       <i class="bi bi-send text-gray-400 cursor-pointer" (click)="sendMessage()"></i>
-    </div>
+    </div>
   </div>
 </div>

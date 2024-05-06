@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { inputContent } from './input'; // Assuming inputContent is properly defined in './input'
 
 @Component({
   selector: 'app-text-tosign',
   templateUrl: './text-tosign.component.html',
-  styleUrls: ['./text-tosign.component.css'] // Corrected property name
+  styleUrls: ['./text-tosign.component.css'] 
 })
 export class TextTosignComponent {
   messageContent: string = '';
@@ -13,7 +12,7 @@ export class TextTosignComponent {
   sendMessage() {
     if (this.messageContent.trim() !== '') {
       this.messages.push(this.messageContent);
-      this.messageContent = ''; // Clear input
+      this.messageContent = '';
     }
   }
 }
