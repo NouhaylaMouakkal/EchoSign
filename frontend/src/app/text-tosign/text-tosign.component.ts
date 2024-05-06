@@ -7,14 +7,13 @@ import { inputContent } from './input'; // Assuming inputContent is properly def
   styleUrls: ['./text-tosign.component.css'] // Corrected property name
 })
 export class TextTosignComponent {
-  messages: any[] = []; // Declare 'messages' property
-  messageChat: string = ''; // Declare 'messageChat' property
+  messageContent: string = '';
+  messages: string[] = [];
 
-  // Declare 'send' method
-  send() {
-    if (this.messageChat.trim() !== '') {
-      this.messages.push(this.messageChat); // Add the message to the messages array
-      this.messageChat = ''; // Clear the input field after sending
+  sendMessage() {
+    if (this.messageContent.trim() !== '') {
+      this.messages.push(this.messageContent);
+      this.messageContent = ''; // Clear input
     }
   }
 }
