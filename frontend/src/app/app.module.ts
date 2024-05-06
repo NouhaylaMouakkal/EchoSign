@@ -10,10 +10,7 @@ import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { WebcamModule } from 'ngx-webcam';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InputTextComponent } from './input-text/input-text.component';
-import { InputAudioComponent } from './input-audio/input-audio.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     AppComponent,
