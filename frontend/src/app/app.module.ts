@@ -9,14 +9,10 @@ import { TextTosignComponent } from './text-tosign/text-tosign.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { WebcamModule } from 'ngx-webcam';
-<<<<<<< HEAD
 import { ReactiveFormsModule } from '@angular/forms';
-=======
 import { InputTextComponent } from './input-text/input-text.component';
 import { InputAudioComponent } from './input-audio/input-audio.component';
 import { ReactiveFormsModule } from '@angular/forms';
-
->>>>>>> 406de6f (fix style sign to text)
 import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
@@ -32,10 +28,6 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     WebcamModule,
     ReactiveFormsModule,
-<<<<<<< HEAD
-    FormsModule
-=======
->>>>>>> 406de6f (fix style sign to text)
   ],
   providers: [],
   bootstrap: [AppComponent]
