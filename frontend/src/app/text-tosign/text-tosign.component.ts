@@ -1,53 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { inputContent } from './input';
-
-
-
+import { Component } from '@angular/core';
+import { inputContent } from './input'; // Assuming inputContent is properly defined in './input'
 
 @Component({
   selector: 'app-text-tosign',
   templateUrl: './text-tosign.component.html',
-  styleUrl: './text-tosign.component.css'
+  styleUrls: ['./text-tosign.component.css'] // Corrected property name
 })
+export class TextTosignComponent {
+  messages: any[] = []; // Declare 'messages' property
+  messageChat: string = ''; // Declare 'messageChat' property
 
-export class TextTosignComponent{
-
-  inputContent: inputContent[] = [
-    {
-      id: '1',
-      sender: 'Alice',
-      text: 'Hello, how are you?',
-      source: '',
-      isText: true,
-    },
-    {
-      id: '2',
-      sender: 'Bob',
-      text: 'Hi Alice, I am doing well. Thanks for asking!',
-      source: '',
-      isText: true,
-    },
-    {
-      id: '3',
-      sender: 'Alice',
-      text: '',
-      source: 'audio1.mp3',
-      isText: false,
-    },
-    {
-      id: '4',
-      sender: 'Bob',
-      text: '',
-      source: 'audio2.mp3',
-      isText: false,
-    },
-  ];
-
-  
-
-
-  
-
+  // Declare 'send' method
+  send() {
+    if (this.messageChat.trim() !== '') {
+      this.messages.push(this.messageChat); // Add the message to the messages array
+      this.messageChat = ''; // Clear the input field after sending
+    }
+  }
 }
-
-

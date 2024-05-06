@@ -1,37 +1,33 @@
 <br><br>
 <!-- Container for the entire page -->
-<div class="page-container">
+<div class="page-container flex">
   <!-- Left side container -->
-  <div class="left-container">
+  <div class="left-container mr-4">
     <div class="output-box text-lg font-bold">
       <h2>Your Words in Sign Language</h2>
-        <iframe width="600" 
-                height="500" 
-                src="https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4" 
-                frameborder="0" 
-                allowfullscreen>
-        </iframe>
+      <iframe width="600" 
+              height="500" 
+              src="https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4" 
+              frameborder="0" 
+              allowfullscreen>
+      </iframe>
     </div>
   </div>
   <!-- Right side container -->
-  <div class="right-container flex-grow md:h-full">
-    <div class="input-box h-full max-w-2xl mx-auto bg-gray-300 shadow-lg rounded-lg overflow-hidden">
-      <div class="p-4 h-full" id="chat-messages">
-        <div *ngFor="let item of inputContent">
-          <ng-container *ngIf="!item.isText">
-            <app-input-audio [itemContent]="item"></app-input-audio>
-          </ng-container>
-          <ng-container *ngIf="item.isText">
-            <app-input-text [itemContent]="item"></app-input-text>
-          </ng-container>
-        </div>
-      <!-- Input field, send button, voice recorder -->
-      <div class="flex items-center p-4 bg-gray-300">
-        <input type="text" placeholder="Type your message..." class="flex-grow px-3 py-2 mr-2 border rounded-lg focus:outline-none text-black">
-        <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">Send</button>
-        <button class="px-4 py-2 bg-green-500 text-white rounded-lg ml-2">Record</button>
+  <div class="flex flex-col justify-between h-[77vh] my-14 border-2 p-2 rounded-lg w-[40%]" style="background-color: #222222; border-color: #222222;">
+    <div class="text-white text-lg rounded-lg font-bold p-1 flex items-center border-b">
+      <i class="bi bi-pen-fill"></i>
+      <span class="flex p-2"> Express Yourself in Words and Voice</span>
+    </div>
+    <div class="overflow-y-auto">
+      <!-- Content here -->
+    </div>
+    <!-- Input for typing message -->
+    <div class="p-4 dark flex items-center">
+      <div class="flex-1 mr-2">
+        <input type="text" id="default-input" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" style="background-color: #555555;">
       </div>
+      <i class="bi bi-send text-gray-400"></i>
     </div>
   </div>
 </div>
-
