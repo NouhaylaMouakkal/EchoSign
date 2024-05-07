@@ -1,7 +1,9 @@
+from flask import Flask, request, jsonify
 import cv2
 import imageio
 import os
-import moviepy.editor as mp
+
+app = Flask(__name__)
 
 def afficher_alphabet(texte, target_width, target_height, delay_between_letters):
     frames = [] 
@@ -28,16 +30,30 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters)
                 output_frames.append(frame)
         
         # Write frames to video
-        output_video_path = "../output.mp4"
+        output_video_path = "./VideoOutput/output.mp4"
         out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 10, (target_width, target_height))
         for frame in output_frames:
             out.write(frame)
         out.release()
         print(f"Vidéo créée : {output_video_path}")
+        return output_video_path
+    else:
+        return None
 
-# Exemple d'utilisation
-texte = input("Entrez un texte : ")
-target_width = 600  
-target_height = 500 
-delay_between_letters = 10 
-afficher_alphabet(texte, target_width, target_height, delay_between_letters)
+@app.route('/generate-video', methods=['POST'])
+def generate_video():
+    data = request.json
+    texte = data.get('texte')
+    target_width = data.get('target_width', 600)
+    target_height = data.get('target_height', 500)
+    delay_between_letters = data.get('delay_between_letters', 10)
+
+    video_path = afficher_alphabet(texte, target_width, target_height, delay_between_letters)
+    
+    if video_path:
+        return jsonify({"video_path": video_path})
+    else:
+        return jsonify({"error": "Erreur lors de la génération de la vidéo"}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)

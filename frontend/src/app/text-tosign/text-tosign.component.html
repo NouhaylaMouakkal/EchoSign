@@ -7,7 +7,7 @@
       <h2>Your Words in Sign Language</h2>
       <iframe width="600" 
               height="500" 
-              src="https://media.geeksforgeeks.org/wp-content/uploads/20190616234019/Canvas.move_.mp4" 
+              [src]="videoPath"
               frameborder="0" 
               allowfullscreen>
       </iframe>
@@ -28,7 +28,7 @@
       <div class="flex-1 mr-2">
         <input type="text" [(ngModel)]="messageContent" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" style="background-color: #555555;">
       </div>
-      <i class="bi bi-send text-gray-400 cursor-pointer" (click)="sendMessage()"></i>
+      <i class="bi bi-send text-gray-400 cursor-pointer" (click)="generateVideo()"></i>
     </div>
   </div>
 </div>
