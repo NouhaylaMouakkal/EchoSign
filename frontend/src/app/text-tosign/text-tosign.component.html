@@ -7,28 +7,29 @@
       <h2>Your Words in Sign Language</h2>
       <iframe width="600" 
               height="500" 
-              [src]="videoPath"
+              src="../../assets/output.mp4"
               frameborder="0" 
               allowfullscreen>
-      </iframe>
-    </div>
-  </div>
-  <!-- Right side container -->
-  <div class="flex flex-col justify-between h-[77vh] my-14 border-2 p-2 rounded-lg w-[40%]" style="background-color: #222222; border-color: #222222;">
-    <div class="text-white text-lg rounded-lg font-bold p-1 flex items-center border-b">
-      <i class="bi bi-pen-fill"></i>
-      <span class="flex p-2"> Express Yourself in Words and Voice</span>
-    </div>
-    <div class="overflow-y-auto" id="contentHere">
-      <div *ngFor="let message of messages" class="message bg-gray-700 text-white rounded-lg p-2 mb-2">{{ message }}</div>
-    </div>
-    
-    <!-- Input for typing message -->
-    <div class="p-4 dark flex items-center">
-      <div class="flex-1 mr-2">
-        <input type="text" [(ngModel)]="messageContent" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" style="background-color: #555555;">
-      </div>
-      <i class="bi bi-send text-gray-400 cursor-pointer" (click)="generateVideo()"></i>
-    </div>
-  </div>
+</iframe>
 </div>
+</div>
+<!-- Right side container -->
+<div class="flex flex-col justify-between h-[77vh] my-14 border-2 p-2 rounded-lg w-[40%]" style="background-color: #222222; border-color: #222222;">
+<div class="text-white text-lg rounded-lg font-bold p-1 flex items-center border-b">
+<i class="bi bi-pen-fill"></i>
+<span class="flex p-2"> Express Yourself in Words and Voice</span>
+</div>
+<div class="overflow-y-auto" id="contentHere">
+<div *ngFor="let message of messages" class="message bg-gray-700 text-white rounded-lg p-2 mb-2">{{ message }}</div>
+</div>
+
+<!-- Input for typing message -->
+<div class="p-4 dark flex items-center">
+<div class="flex-1 mr-2">
+  <input type="text" [(ngModel)]="messageContent" class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full" style="background-color: #555555;">
+</div>
+<i class="bi bi-send text-gray-400 cursor-pointer" (click)="sendMessage()"></i>
+</div>
+</div>
+</div>
+
