@@ -6,6 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./text-tosign.component.css'] 
 })
 export class TextTosignComponent {
+clearchat() {
+    this.messages = [];
+}
   messageContent: string = '';
   messages: string[] = [];
 
