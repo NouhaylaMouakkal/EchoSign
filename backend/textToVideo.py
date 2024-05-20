@@ -29,7 +29,7 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters)
         
         # Write frames to video
         output_video_path = "../output.mp4"
-        out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), 10, (target_width, target_height))
+        out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4'), 10, (target_width, target_height))
         for frame in output_frames:
             out.write(frame)
         out.release()

@@ -5,8 +5,16 @@
       <div class="absolute inset-0 bg-white opacity-10 rounded-lg pointer-events-none"></div>
       <h2 class="text-lg font-bold text-white relative z-10 flex items-center">
         <i class="bi bi-sign-language mr-2"></i>Your Words in Sign Language
+        <button (click)="refreshVideo()">
+          <i class="bi bi-arrow-clockwise ms-4"></i> refresh
+        </button>
       </h2>
-      <iframe class="relative z-10 rounded-lg shadow-lg mt-4 w-full" height="500" src="../../assets/output.mp4" frameborder="0" allowfullscreen></iframe>
+      <!-- <iframe class="relative z-10 rounded-lg shadow-lg mt-4 w-full" height="500" src="output" frameborder="0" allowfullscreen></iframe> -->
+      <video #videoPlayer class="relative z-10 rounded-lg shadow-lg mt-4 w-full" height="500" controls>
+        <!-- <source src="assets/output.mp4" type="video/mp4"> -->
+        <source [src]="videoSrc" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
   </div>
   <!-- Right side container -->
@@ -28,7 +36,7 @@
         <i class="bi bi-mic-fill absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"></i>
       </div>
       <button class="bg-gray-600 hover:bg-gray-700 text-white rounded-full py-1 px-4 flex items-center space-x-2 transition duration-300 ease-in-out" (click)="sendMessage()">
-        <i class="bi bi-send text-xl"></i>
+        <i class="bi bi-send text-xl"></i>Submit
       </button>
     </div>
     <div class="flex mt-1 relative z-10 justify-center">
