@@ -30,12 +30,12 @@
             class="bi bi-lightbulb-fill mr-2"></i>Translation</p>
         <!-- Translation in French and English -->
         <div
-          class="translation bg-gradient-to-r from-gray-600 to-gray-800 p-4 rounded-lg text-white mb-2 relative z-10 flex items-center">
+          class="translation bg-gradient-to-r from-gray-600 to-gray-800 p-4 rounded-lg text-white mb-2 relative z-10 flex items-center shadow">
           <img src="assets/france.png" alt="French Logo" class="mr-2 w-6 h-6">
           <span>Translation in French</span>
         </div>
         <div
-          class="translation bg-gradient-to-r from-gray-600 to-gray-800 p-4 rounded-lg text-white relative z-10 flex items-center">
+          class="translation bg-gradient-to-r from-gray-600 to-gray-800 p-4 rounded-lg text-white relative z-10 flex items-center shadow">
           <img src="assets/united-states.png" alt="English Logo" class="mr-2 w-6 h-6">
           <span>Translation in English</span>
         </div>
@@ -47,7 +47,7 @@
       <!-- Webcam box -->
       <div
         class="webcam-box bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-lg shadow-lg mb-8 text-white w-full relative"
-        style="height: 75vh;">
+        style="height: 63vh;">
         <div class="absolute inset-0 bg-white opacity-10 rounded-lg pointer-events-none"></div>
         <p class="title text-lg font-bold flex items-center mb-4 relative z-10"><i
             class="bi bi-camera-video-fill mr-2"></i>Webcam Feed</p>
@@ -56,11 +56,12 @@
         <!-- Buttons for webcam control -->
         <div class="buttons mt-4 flex justify-center relative z-10">
           <button (click)="startWebcam()"
-            class="bg-gradient-to-r from-teal-500 to-teal-700 hover:from-teal-600 hover:to-teal-800 text-white font-bold py-2 px-6 rounded-full mr-4 transition duration-300 ease-in-out">Start</button>
+            class="bg-gradient-to-r from-teal-500 to-teal-700 hover:from-teal-600 hover:to-teal-800 text-white font-bold py-1 px-10 rounded-full mr-4 transition duration-300 ease-in-out">Start</button>
           <button (click)="stopWebcam()"
-            class="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out">Stop</button>
+            class="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-1 px-10 rounded-full transition duration-300 ease-in-out">Stop</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+<div style="margin-bottom: 7rem;"></div>
