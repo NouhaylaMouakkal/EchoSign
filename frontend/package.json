@@ -20,6 +20,8 @@
     "@angular/router": "^17.3.0",
     "@emailjs/browser": "^4.3.3",
     "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/control_utils": "^0.6.1675466023",
+    "@mediapipe/control_utils_3d": "^0.3.1675466062",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/hands": "^0.4.1675469240",
     "bootstrap-icons": "^1.11.3",
