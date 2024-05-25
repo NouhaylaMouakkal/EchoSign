@@ -3,6 +3,7 @@ import WaveSurfer from 'wavesurfer.js';
 import { HttpClient } from '@angular/common/http';
 import { Hands, HAND_CONNECTIONS, Results } from '@mediapipe/hands';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import { OpenaiService } from '../services/openai.service';
 
 @Component({
   selector: 'app-sign-totext',
@@ -10,6 +11,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
   styleUrls: ['./sign-totext.component.css']
 })
 export class SignTotextComponent implements OnInit, OnDestroy {
+
   @ViewChild('webcamVideo', { static: true })
   webcamVideo!: ElementRef<HTMLVideoElement>;
   @ViewChild('canvas', { static: true })
@@ -18,15 +20,18 @@ export class SignTotextComponent implements OnInit, OnDestroy {
   stream!: MediaStream | null;
   isWebcamStarted = false;
   predictedLetter: string = 'Click Capture or Space or Enter to predict.';
+  previousPredictedLetter: string = '';
   private waveSurfer!: WaveSurfer;
   private hands!: Hands;
   private canvasCtx!: CanvasRenderingContext2D;
+  isLoading: boolean = false; // Loading state
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private openaiService: OpenaiService) { }
 
   ngOnInit() {
     this.initWebcam();
     this.initializeWaveSurfer();
+    this.clearPrediction();
     this.initializeHands();
   }
 
@@ -70,6 +75,12 @@ export class SignTotextComponent implements OnInit, OnDestroy {
     }
   }
 
+  clearPrediction() {
+    this.predictedLetter = 'Click Capture or Space or Enter to predict.';
+    this.previousPredictedLetter = '';
+    this.waveSurfer.load('assets/init_predit.mp3');
+  }
+
   captureImage() {
     if (!this.webcamVideo.nativeElement) return;
     const canvas = document.createElement('canvas');
@@ -83,7 +94,10 @@ export class SignTotextComponent implements OnInit, OnDestroy {
           const formData = new FormData();
           formData.append('image', blob);
           this.http.post<{ letters: string[] }>('http://localhost:5000/detect-sign-language', formData).subscribe(response => {
-            this.predictedLetter = response.letters.join('');
+            if (this.predictedLetter === 'Click Capture or Space or Enter to predict.') {
+              this.predictedLetter = '';
+            }
+            this.predictedLetter += response.letters.join('');
           });
         }
       }, 'image/jpeg');
@@ -103,15 +117,7 @@ export class SignTotextComponent implements OnInit, OnDestroy {
       barGap: 2
     });
 
-    this.waveSurfer.load('assets/test.mp3');
-  }
-
-  public togglePlayPause(): void {
-    if (this.waveSurfer.isPlaying()) {
-      this.waveSurfer.pause();
-    } else {
-      this.waveSurfer.play();
-    }
+    this.waveSurfer.load('assets/init_predit.mp3');
   }
 
   private initializeHands() {
@@ -160,5 +166,37 @@ export class SignTotextComponent implements OnInit, OnDestroy {
       }
     }
     this.canvasCtx.restore();
+  }
+
+  public togglePlayPause(): void {
+    if (this.waveSurfer.isPlaying()) {
+      this.waveSurfer.pause();
+    } else {
+      this.waveSurfer.play();
+    }
+  }
+
+  public listenToPrediction(): void {
+    if (this.predictedLetter && this.predictedLetter !== 'Click Capture or Space or Enter to predict.') {
+      if (this.predictedLetter !== this.previousPredictedLetter) {
+        this.isLoading = true;
+        this.waveSurfer.stop();
+        this.openaiService.generateSpeech(this.predictedLetter).subscribe(blob => {
+          this.isLoading = false;
+          const url = window.URL.createObjectURL(blob);
+          this.waveSurfer.load(url);
+          this.waveSurfer.on('ready', () => {
+            this.waveSurfer.play();
+          });
+          this.previousPredictedLetter = this.predictedLetter;
+        }, error => {
+          this.isLoading = false;
+          console.error('Error generating speech:', error);
+        });
+      } 
+    }
+    if (this.isLoading) this.waveSurfer.stop();
+    else
+     this.togglePlayPause();
   }
 }
