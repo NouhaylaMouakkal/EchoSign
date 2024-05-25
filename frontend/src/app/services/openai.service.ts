@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpenaiService {
   private apiUrl = 'https://api.openai.com/v1/audio/speech';
-  private apiKey = 'sk-proj-MH1e6cIsfJg77nFLRMbIT3BlbkFJYTYX3K7zdQ1LGcW6TXGo'; 
+  private apiKey = environment.openaiApiKey;
 
   constructor(private http: HttpClient) { }
 
@@ -26,4 +28,5 @@ export class OpenaiService {
 
     return this.http.post(this.apiUrl, body, { headers: headers, responseType: 'blob' });
   }
+  
 }

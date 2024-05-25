@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener, SimpleChanges } from '@angular/core';
 import WaveSurfer from 'wavesurfer.js';
 import { HttpClient } from '@angular/common/http';
 import { Hands, HAND_CONNECTIONS, Results } from '@mediapipe/hands';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { OpenaiService } from '../services/openai.service';
+import { TranslationService } from '../services/translation.service';
 
 @Component({
   selector: 'app-sign-totext',
@@ -21,12 +22,15 @@ export class SignTotextComponent implements OnInit, OnDestroy {
   isWebcamStarted = false;
   predictedLetter: string = 'Click Capture or Space or Enter to predict.';
   previousPredictedLetter: string = '';
+  translationFrench: string = 'Translation to French';
+  translationEnglish: string = 'Translation to English';
+  translationMaroc: string = 'Translation to Moroccan Darija';
   private waveSurfer!: WaveSurfer;
   private hands!: Hands;
   private canvasCtx!: CanvasRenderingContext2D;
-  isLoading: boolean = false; // Loading state
+  isLoading: boolean = false;
 
-  constructor(private http: HttpClient, private openaiService: OpenaiService) { }
+  constructor(private http: HttpClient, private openaiService: OpenaiService, private translationService: TranslationService) { }
 
   ngOnInit() {
     this.initWebcam();
@@ -37,6 +41,13 @@ export class SignTotextComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopWebcam();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    
+    if (changes['predictedLetter'] && !changes['predictedLetter'].isFirstChange()) {
+      this.translatePrediction();
+    }
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -77,6 +88,9 @@ export class SignTotextComponent implements OnInit, OnDestroy {
 
   clearPrediction() {
     this.predictedLetter = 'Click Capture or Space or Enter to predict.';
+    this.translationFrench = 'Translation to French';
+    this.translationEnglish = 'Translation to English';
+    this.translationMaroc = 'Translation to Moroccan Darija';
     this.previousPredictedLetter = '';
     this.waveSurfer.load('assets/init_predit.mp3');
   }
@@ -98,6 +112,7 @@ export class SignTotextComponent implements OnInit, OnDestroy {
               this.predictedLetter = '';
             }
             this.predictedLetter += response.letters.join('');
+            this.translatePrediction();
           });
         }
       }, 'image/jpeg');
@@ -107,7 +122,7 @@ export class SignTotextComponent implements OnInit, OnDestroy {
   private initializeWaveSurfer(): void {
     this.waveSurfer = WaveSurfer.create({
       container: '#waveform',
-      waveColor: 'rgba(255, 255, 255, 0.9)', 
+      waveColor: 'rgba(255, 255, 255, 0.9)',
       progressColor: 'rgb(25, 255, 255)',
       cursorColor: 'rgba(255, 255, 255, 0.7)',
       barWidth: 3,
@@ -193,10 +208,29 @@ export class SignTotextComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           console.error('Error generating speech:', error);
         });
-      } 
+      }
     }
     if (this.isLoading) this.waveSurfer.stop();
     else
-     this.togglePlayPause();
+      this.togglePlayPause();
+  }
+
+  private translatePrediction(): void {
+    this.translationService.translate(this.predictedLetter, 'French').subscribe(frenchTranslation => {
+      this.translationFrench = frenchTranslation;
+    }, error => {
+      console.error('Error translating to French:', error);
+    });
+
+    this.translationService.translate(this.predictedLetter, 'English').subscribe(englishTranslation => {
+      this.translationEnglish = englishTranslation;
+    }, error => {
+      console.error('Error translating to English:', error);
+    });
+    this.translationService.translate(this.predictedLetter, 'Moroccan Darija').subscribe(marocTranslation => {
+      this.translationMaroc = marocTranslation;
+    }, error => {
+      console.error('Error translating to Ma:', error);
+    });
   }
 }

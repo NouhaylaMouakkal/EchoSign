@@ -40,14 +40,18 @@
         <p class="title text-lg font-bold flex items-center text-white mb-4 relative z-10">
           <i class="bi bi-lightbulb-fill mr-2"></i>Translation
         </p>
-        <!-- Translation in French and English -->
+        <!-- Translation in French and English Arabic-->
+        <div class="translation bg-gradient-to-r from-gray-600 to-gray-800 p-4 rounded-lg text-white mb-2 relative z-10 flex items-center shadow">
+          <img src="assets/maroc.png" alt="maroc Logo" class="mr-2 w-6 h-6">
+          <span>{{ translationMaroc }}</span>
+        </div>
         <div class="translation bg-gradient-to-r from-gray-600 to-gray-800 p-4 rounded-lg text-white mb-2 relative z-10 flex items-center shadow">
           <img src="assets/france.png" alt="French Logo" class="mr-2 w-6 h-6">
-          <span>Translation in French</span>
+          <span>{{ translationFrench }}</span>
         </div>
         <div class="translation bg-gradient-to-r from-gray-600 to-gray-800 p-4 rounded-lg text-white relative z-10 flex items-center shadow">
           <img src="assets/united-states.png" alt="English Logo" class="mr-2 w-6 h-6">
-          <span>Translation in English</span>
+          <span>{{ translationEnglish }}</span>
         </div>
       </div>
     </div>
