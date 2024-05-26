@@ -27,6 +27,7 @@
     "bootstrap-icons": "^1.11.3",
     "emailjs-com": "^3.2.0",
     "flowbite": "^2.3.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
     "ngx-webcam": "^0.4.1",
     "openai": "^4.0.0",
     "rxjs": "~7.8.0",

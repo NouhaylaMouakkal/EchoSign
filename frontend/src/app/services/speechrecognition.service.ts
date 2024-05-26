@@ -1,9 +1,29 @@
 import { Injectable } from '@angular/core';
+import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SpeechrecognitionService {
+export class SpeechRecognitionService {
+  private speechConfig: sdk.SpeechConfig;
+  private audioConfig: sdk.AudioConfig;
+  private recognizer: sdk.SpeechRecognizer;
 
-  constructor() { }
+  constructor() {
+    this.speechConfig = sdk.SpeechConfig.fromSubscription('6f599a8f997d40f4ba72c8888c11397e', 'eastus');
+    this.audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
+    this.recognizer = new sdk.SpeechRecognizer(this.speechConfig, this.audioConfig);
+  }
+
+  recognizeSpeech(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.recognizer.recognizeOnceAsync(result => {
+        if (result.reason === sdk.ResultReason.RecognizedSpeech) {
+          resolve(result.text);
+        } else {
+          reject(result.errorDetails);
+        }
+      });
+    });
+  }
 }

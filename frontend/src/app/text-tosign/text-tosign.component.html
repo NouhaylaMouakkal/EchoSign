@@ -12,10 +12,8 @@
           <i class="bi bi-arrow-clockwise text-xl"></i>
           <span>Refresh</span>
         </button>
-      </div>      
-      <!-- <iframe class="relative z-10 rounded-lg shadow-lg mt-4 w-full" height="500" src="output" frameborder="0" allowfullscreen></iframe> -->
+      </div>
       <video #videoPlayer class="relative z-10 rounded-lg shadow-lg mt-4 w-full" height="500" controls>
-        <!-- <source src="assets/output.mp4" type="video/mp4"> -->
         <source [src]="videoSrc" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -33,17 +31,16 @@
         <i class="bi bi-trash-fill text-xl"></i>
         <span>Clear Chat</span>
       </button>
-    </div>    
+    </div>
     <div class="overflow-y-auto flex-1 mt-4 relative z-10" id="contentHere">
       <div *ngFor="let message of messages" class="message bg-gray-800 text-white rounded-lg py-2 px-4 mb-2 shadow-md">
         {{ message }}
       </div>
     </div>
-    <!-- Chat Input for typing message -->
     <div class="p-2 flex items-center relative z-10 space-x-2 w-full">
       <div class="flex-1 relative">
         <input type="text" [(ngModel)]="messageContent" class="border-none text-white text-sm rounded-full shadow-inner px-4 py-3 w-full bg-gray-800 placeholder-gray-400 outline-none" placeholder="Type a message...">
-        <i class="bi bi-mic-fill absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"></i>
+        <i (click)="startVoiceRecognition()" class="bi bi-mic-fill absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"></i>
       </div>
       <button class="bg-gray-600 hover:bg-gray-700 text-white rounded-full py-1 px-4 flex items-center space-x-2 transition duration-300 ease-in-out" (click)="sendMessage()">
         Submit <i class="bi bi-send text-xl ml-2"></i>
