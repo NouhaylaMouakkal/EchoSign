@@ -5,29 +5,35 @@ import { SpeechRecognitionService } from "../services/speechrecognition.service"
 @Component({
   selector: 'app-text-tosign',
   templateUrl: './text-tosign.component.html',
-  styleUrls: ['./text-tosign.component.css']
+  styleUrls: ['./text-tosign.component.css'] 
 })
+
 export class TextTosignComponent {
-  @ViewChild('videoPlayer') videoPlayer?: ElementRef;
-  messageContent: string = '';
-  messages: string[] = [];
-  videoSrc: string = '';
+  constructor(public  videoService: VideoService, private speechRecognitionService: SpeechRecognitionService) { }
 
-  constructor(public videoService: VideoService, private speechRecognitionService: SpeechRecognitionService) { }
+  @ViewChild('videoPlayer') videoPlayer?: ElementRef ;
+  video: HTMLVideoElement = this.videoPlayer?.nativeElement ; 
+  messageContent: string = '' ;
+  messages: string[] = [] ;
+  videoSrc: string = "assets/output" + this.messages.length + ".mp4" ; 
 
+  //to clear a chat
   clearchat() {
-    this.messages = [];
+      this.messages = [];
   }
 
+  //to send a message
   sendMessage() {
     if (this.messageContent.trim() !== '') {
+      //add to the messages array to display the message in the conversation
       this.messages.push(this.messageContent);
+      //prepare our data ro send it to the backend
       const data = {
         texte: this.messageContent,
         target_width: 600,
         target_height: 500,
         delay_between_letters: 10,
-        req_num: this.messages.length
+        req_num : this.messages.length
       };
 
       this.videoService.generateVideo(data).subscribe(
@@ -43,13 +49,12 @@ export class TextTosignComponent {
     }
   }
 
+
   refreshVideo() {
-    this.videoSrc = `assets/output${this.messages.length}.mp4`;
-    if (this.videoPlayer) {
-      const video: HTMLVideoElement = this.videoPlayer.nativeElement;
-      video.load();
-      video.play();
-    }
+    this.videoSrc = "assets/output" + this.messages.length + ".mp4";
+    this.video = this.videoPlayer?.nativeElement ; 
+    this.video.load(); // Trigger video reload
+    this.video.play(); // Optionally play the video
   }
 
   async startVoiceRecognition() {
