@@ -5,7 +5,6 @@ import os
 from flask_cors import CORS
 import numpy as np
 import mediapipe as mp
-from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
 CORS(app)
@@ -38,7 +37,7 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters,
             for _ in range(delay_between_letters):
                 output_frames.append(frame)
         
-        output_video_path = f"../frontend/src/assets/output{req_num}.mp4"
+        output_video_path = f"../frontend/src/assets/videosOutput/output{req_num}.mp4"
         out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'H264'), 10, (target_width, target_height))
         for frame in output_frames:
             out.write(frame)
@@ -68,57 +67,57 @@ def generate_video():
 ##                       Sign To Text Part                     ##
 ##################################################################
 
-# Load the saved model
-model = load_model("./model/asl_alphabet_cnn.h5")
+# # Load the saved model
+# model = load_model("./model/asl_alphabet_cnn.h5")
 
-# Define class labels
-labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'del', 'nothing', 'space']
+# # Define class labels
+# labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'del', 'nothing', 'space']
 
-# Initialize MediaPipe Hands
-mp_drawing = mp.solutions.drawing_utils
-mp_hands = mp.solutions.hands.Hands()
+# # Initialize MediaPipe Hands
+# mp_drawing = mp.solutions.drawing_utils
+# mp_hands = mp.solutions.hands.Hands()
 
-def preprocess_frame(frame):
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
-    frame = cv2.resize(frame, (32, 32))  # Resize to target size
-    frame = frame / 255.0  # Normalize pixels
-    frame = np.expand_dims(frame, axis=-1)  # Add channel dimension
-    frame = np.expand_dims(frame, axis=0)  # Add batch dimension
-    return frame
+# def preprocess_frame(frame):
+#     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+#     frame = cv2.resize(frame, (32, 32))  # Resize to target size
+#     frame = frame / 255.0  # Normalize pixels
+#     frame = np.expand_dims(frame, axis=-1)  # Add channel dimension
+#     frame = np.expand_dims(frame, axis=0)  # Add batch dimension
+#     return frame
 
-@app.route('/detect-sign-language', methods=['POST'])
-def detect_sign_language():
-    frame = cv2.imdecode(np.frombuffer(request.files['image'].read(), np.uint8), cv2.IMREAD_COLOR)
+# @app.route('/detect-sign-language', methods=['POST'])
+# def detect_sign_language():
+#     frame = cv2.imdecode(np.frombuffer(request.files['image'].read(), np.uint8), cv2.IMREAD_COLOR)
 
-    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#     image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-    results = mp_hands.process(image)
+#     results = mp_hands.process(image)
 
-    letters = []
+#     letters = []
 
-    if results.multi_hand_landmarks:
-        for hand_landmarks in results.multi_hand_landmarks:
-            h, w, _ = frame.shape
-            x_min = min([landmark.x for landmark in hand_landmarks.landmark]) * w
-            y_min = min([landmark.y for landmark in hand_landmarks.landmark]) * h
-            x_max = max([landmark.x for landmark in hand_landmarks.landmark]) * w
-            y_max = max([landmark.y for landmark in hand_landmarks.landmark]) * h
-            x_min, x_max = int(x_min), int(x_max)
-            y_min, y_max = int(y_min), int(y_max)
+#     if results.multi_hand_landmarks:
+#         for hand_landmarks in results.multi_hand_landmarks:
+#             h, w, _ = frame.shape
+#             x_min = min([landmark.x for landmark in hand_landmarks.landmark]) * w
+#             y_min = min([landmark.y for landmark in hand_landmarks.landmark]) * h
+#             x_max = max([landmark.x for landmark in hand_landmarks.landmark]) * w
+#             y_max = max([landmark.y for landmark in hand_landmarks.landmark]) * h
+#             x_min, x_max = int(x_min), int(x_max)
+#             y_min, y_max = int(y_min), int(y_max)
 
-            x_min = max(0, x_min)
-            y_min = max(0, y_min)
-            x_max = min(w, x_max)
-            y_max = min(h, y_max)
+#             x_min = max(0, x_min)
+#             y_min = max(0, y_min)
+#             x_max = min(w, x_max)
+#             y_max = min(h, y_max)
 
-            roi = frame[y_min:y_max, x_min:x_max]
-            if roi.size != 0:
-                processed_roi = preprocess_frame(roi)
-                predictions = model.predict(processed_roi)
-                predicted_class = labels[np.argmax(predictions)]
-                letters.append(predicted_class)
+#             roi = frame[y_min:y_max, x_min:x_max]
+#             if roi.size != 0:
+#                 processed_roi = preprocess_frame(roi)
+#                 predictions = model.predict(processed_roi)
+#                 predicted_class = labels[np.argmax(predictions)]
+#                 letters.append(predicted_class)
 
-    return jsonify({"letters": letters})
+#     return jsonify({"letters": letters})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=2002)

@@ -15,7 +15,7 @@ export class TextTosignComponent {
   video: HTMLVideoElement = this.videoPlayer?.nativeElement ; 
   messageContent: string = '' ;
   messages: string[] = [] ;
-  videoSrc: string = "assets/output" + this.messages.length + ".mp4" ; 
+  videoSrc: string = "assets/videosOutput/output" + this.messages.length + ".mp4" ; 
 
   //to clear a chat
   clearchat() {
@@ -51,7 +51,7 @@ export class TextTosignComponent {
 
 
   refreshVideo() {
-    this.videoSrc = "assets/output" + this.messages.length + ".mp4";
+    this.videoSrc = "assets/videosOutput/output" + this.messages.length + ".mp4";
     this.video = this.videoPlayer?.nativeElement ; 
     this.video.load(); // Trigger video reload
     this.video.play(); // Optionally play the video

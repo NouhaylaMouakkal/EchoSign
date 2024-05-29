@@ -5,6 +5,7 @@ import { Hands, HAND_CONNECTIONS, Results } from '@mediapipe/hands';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 import { OpenaiService } from '../services/openai.service';
 import { TranslationService } from '../services/translation.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-sign-totext',
@@ -107,12 +108,13 @@ export class SignTotextComponent implements OnInit, OnDestroy {
         if (blob) {
           const formData = new FormData();
           formData.append('image', blob);
-          this.http.post<{ letters: string[] }>('http://localhost:5000/detect-sign-language', formData).subscribe(response => {
+          this.http.post<{ predicted_character: any }>(environment.sign2textPublicURLroute, formData).subscribe(response => {
+            console.log(response.predicted_character.toString() )
             if (this.predictedLetter === 'Click Capture or Space or Enter to predict.') {
               this.predictedLetter = '';
             }
-            this.predictedLetter += response.letters.join('');
-            this.translatePrediction();
+            this.predictedLetter += response.predicted_character.toString();
+            // this.translatePrediction();
           });
         }
       }, 'image/jpeg');
