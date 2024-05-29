@@ -99,6 +99,11 @@ export class SignTotextComponent implements OnInit, OnDestroy {
     this.waveSurfer.load('assets/init_predit.mp3');
   }
 
+  deleteLastCharacter() {
+    if (this.predictedLetter != 'Click Capture or Space or Enter to predict.'){
+      this.predictedLetter = this.predictedLetter.slice(0, -1);
+    }
+  }
   captureImage() {
     if (!this.webcamVideo.nativeElement) return;
     const canvas = document.createElement('canvas');
