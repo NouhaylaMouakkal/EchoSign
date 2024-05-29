@@ -70,7 +70,6 @@ def generate_video():
 
 # Load the saved model
 model = load_model("./model/asl_alphabet_cnn.h5")
-model = load_model("./sign2text/signlanguagedetectionmodel48x48.h5")
 
 # Define class labels
 labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'del', 'nothing', 'space']

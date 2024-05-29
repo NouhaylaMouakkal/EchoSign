@@ -10,7 +10,7 @@ export class SpeechRecognitionService {
   private recognizer: sdk.SpeechRecognizer;
 
   constructor() {
-    this.speechConfig = sdk.SpeechConfig.fromSubscription('6f599a8f997d40f4ba72c8888c11397e', 'eastus');
+    this.speechConfig = sdk.SpeechConfig.fromSubscription('36df40aa677b441a8f824b696af85abf', 'eastus');
     this.audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
     this.recognizer = new sdk.SpeechRecognizer(this.speechConfig, this.audioConfig);
   }
