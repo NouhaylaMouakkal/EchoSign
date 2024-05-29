@@ -1,0 +1,13 @@
+# steps to use:
+1- Preferably use virtual env in python for this project.
+run: 
+  virtualenv .  
+  Scripts/activate.bat
+
+
+2- install libraries specified in the requirements.txt file
+
+3- the order to run the py code is: collect_imgs.py > create_dataset.py > train_classifier.py > inference_classifier.py
+
+
++ to use the dataset already existing in this project, run only *inference_classifier.py*
