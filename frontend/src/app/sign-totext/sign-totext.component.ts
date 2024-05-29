@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
 import WaveSurfer from 'wavesurfer.js';
 import { HttpClient } from '@angular/common/http';
 import { Hands, HAND_CONNECTIONS, Results } from '@mediapipe/hands';
@@ -22,7 +22,7 @@ export class SignTotextComponent implements OnInit, OnDestroy {
   stream!: MediaStream | null;
   isWebcamStarted = false;
   predictedLetter: string = 'Click Capture or Space or Enter to predict.';
-  previousPredictedLetter: string = '';
+  test__: string = '';
   translationFrench: string = 'Translation to French';
   translationEnglish: string = 'Translation to English';
   translationMaroc: string = 'Translation to Moroccan Darija';
@@ -30,6 +30,8 @@ export class SignTotextComponent implements OnInit, OnDestroy {
   private hands!: Hands;
   private canvasCtx!: CanvasRenderingContext2D;
   isLoading: boolean = false;
+  captureInProgress: boolean = false;
+  private captureTimeout: any;
 
   constructor(private http: HttpClient, private openaiService: OpenaiService, private translationService: TranslationService) { }
 
@@ -42,19 +44,21 @@ export class SignTotextComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopWebcam();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    
-    if (changes['predictedLetter'] && !changes['predictedLetter'].isFirstChange()) {
-      this.translatePrediction();
+    if (this.captureTimeout) {
+      clearTimeout(this.captureTimeout);
     }
   }
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (event.code === 'Space' || event.code === 'Enter') {
-      this.captureImage();
+    if ((event.code === 'Space' || event.code === 'Enter') && !this.captureInProgress) {
+      this.captureInProgress = true;
+      if (this.captureTimeout) {
+        clearTimeout(this.captureTimeout);
+      }
+      this.captureTimeout = setTimeout(() => {
+        this.captureImage();
+      }, 300);
     }
   }
 
@@ -92,7 +96,6 @@ export class SignTotextComponent implements OnInit, OnDestroy {
     this.translationFrench = 'Translation to French';
     this.translationEnglish = 'Translation to English';
     this.translationMaroc = 'Translation to Moroccan Darija';
-    this.previousPredictedLetter = '';
     this.waveSurfer.load('assets/init_predit.mp3');
   }
 
@@ -109,15 +112,25 @@ export class SignTotextComponent implements OnInit, OnDestroy {
           const formData = new FormData();
           formData.append('image', blob);
           this.http.post<{ predicted_character: any }>(environment.sign2textPublicURLroute, formData).subscribe(response => {
-            console.log(response.predicted_character.toString() )
+            this.captureInProgress = false;
+            const character = response.predicted_character.toString();
+            console.log('Predicted character:', character);
             if (this.predictedLetter === 'Click Capture or Space or Enter to predict.') {
               this.predictedLetter = '';
             }
-            this.predictedLetter += response.predicted_character.toString();
-            // this.translatePrediction();
+            this.predictedLetter += character; // Append the new character
+            this.translatePrediction(this.predictedLetter);
+            this.listenToPrediction(); // Ensure audio is generated after prediction
+          }, error => {
+            this.captureInProgress = false;
+            console.error('Error during prediction:', error);
           });
+        } else {
+          this.captureInProgress = false;
         }
       }, 'image/jpeg');
+    } else {
+      this.captureInProgress = false;
     }
   }
 
@@ -195,44 +208,43 @@ export class SignTotextComponent implements OnInit, OnDestroy {
 
   public listenToPrediction(): void {
     if (this.predictedLetter && this.predictedLetter !== 'Click Capture or Space or Enter to predict.') {
-      if (this.predictedLetter !== this.previousPredictedLetter) {
-        this.isLoading = true;
-        this.waveSurfer.stop();
-        this.openaiService.generateSpeech(this.predictedLetter).subscribe(blob => {
+      this.test__=this.predictedLetter;
+      console.log('Generating speech for:', this.test__);
+      this.isLoading = true;
+      this.waveSurfer.stop();
+      this.openaiService.generateSpeech(this.test__).subscribe(blob => {
           this.isLoading = false;
           const url = window.URL.createObjectURL(blob);
           this.waveSurfer.load(url);
           this.waveSurfer.on('ready', () => {
             this.waveSurfer.play();
           });
-          this.previousPredictedLetter = this.predictedLetter;
-        }, error => {
-          this.isLoading = false;
-          console.error('Error generating speech:', error);
-        });
-      }
-    }
-    if (this.isLoading) this.waveSurfer.stop();
-    else
+      }, error => {
+        this.isLoading = false;
+        console.error('Error generating speech:', error);
+      });
+    } else {
       this.togglePlayPause();
+    }
   }
 
-  private translatePrediction(): void {
-    this.translationService.translate(this.predictedLetter, 'French').subscribe(frenchTranslation => {
+  private translatePrediction(character: string): void {
+    this.translationService.translate(character, 'French').subscribe(frenchTranslation => {
       this.translationFrench = frenchTranslation;
     }, error => {
       console.error('Error translating to French:', error);
     });
 
-    this.translationService.translate(this.predictedLetter, 'English').subscribe(englishTranslation => {
+    this.translationService.translate(character, 'English').subscribe(englishTranslation => {
       this.translationEnglish = englishTranslation;
     }, error => {
       console.error('Error translating to English:', error);
     });
-    this.translationService.translate(this.predictedLetter, 'Moroccan Darija').subscribe(marocTranslation => {
+
+    this.translationService.translate(character, 'Moroccan Darija').subscribe(marocTranslation => {
       this.translationMaroc = marocTranslation;
     }, error => {
-      console.error('Error translating to Ma:', error);
+      console.error('Error translating to Moroccan Darija:', error);
     });
   }
 }

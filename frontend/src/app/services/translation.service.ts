@@ -21,12 +21,12 @@ export class TranslationService {
 
     const messages = [
       {
-        role: "system",
-        content: `Translate the following sentence into ${targetLanguage}: "${text}". If the sentence is unclear, random, or not comprehensible, translate it as it is into the provided language.`
+      role: "system",
+      content: `Translate the following sentence into ${targetLanguage}: "${text}". If the sentence is unclear, random, or not comprehensible, translate it as it is into the provided language letter by letter.`
       },
       {
-        role: "user",
-        content: text
+      role: "user",
+      content: text
       }
     ];
 
