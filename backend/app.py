@@ -17,7 +17,7 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters,
     frames = []
     for lettre in texte.lower():
         if lettre.isalpha():
-            chemin_image = f"../Reverse/{lettre}.gif"
+            chemin_image = f"./Reverse/{lettre}.gif"
             if os.path.exists(chemin_image):
                 try:
                     animation = imageio.get_reader(chemin_image)
@@ -46,6 +46,15 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters,
         return output_video_path
     else:
         return None
+
+@app.route('/', methods=['GET'])
+def test():
+    return jsonify({"message": "BACKEND WORKS"}), 200
+
+@app.route('/active', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 
 @app.route('/generate-video', methods=['POST'])
 def generate_video():
@@ -120,4 +129,5 @@ def generate_video():
 #     return jsonify({"letters": letters})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=2002)
+    app.run(debug=True, host='0.0.0.0', port=2002)
+

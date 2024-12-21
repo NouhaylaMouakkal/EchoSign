@@ -6,7 +6,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Stage 2: Use Nginx to serve the compiled Angular app 
+# Stage 2: Use Nginx to serve the compiled Angular app
 FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 COPY --from=build /usr/src/app/dist/frontend/browser /usr/share/nginx/html
