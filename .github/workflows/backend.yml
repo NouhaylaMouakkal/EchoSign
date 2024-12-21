@@ -1,0 +1,43 @@
+name: Backend CI/CD
+
+on:
+  push:
+    paths:
+      - 'backend/**'  # Trigger only when changes are made to the backend directory
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Check out the code from the GitHub repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Step 2: Log in to Azure Container Registry (ACR)
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: echosignregistry.azurecr.io
+        username: ${{ secrets.AZURE_ACR_USERNAME }}
+        password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+    # Step 3: Build and push the Docker image to ACR
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t echosignregistry.azurecr.io/echosign-backend:latest ./backend
+        docker push echosignregistry.azurecr.io/echosign-backend:latest
+
+    # # Step 4: Log in to Azure using Azure CLI
+    # - name: Azure Login
+    #   uses: azure/login@v1
+    #   with:
+    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # # Step 5: Deploy the Docker image to Azure App Service
+    # - name: Deploy to Azure App Service
+    #   uses: azure/webapps-deploy@v2
+    #   with:
+    #     app-name: 'echosign-backend'  # Name of your Azure App Service
+    #     slot-name: 'production'
+    #     images: 'echosignregistry.azurecr.io/echosign-backend:latest'
