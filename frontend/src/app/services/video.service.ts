@@ -7,7 +7,6 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class VideoService {
-
   // private apiUrl = 'http://127.0.0.1:2002/generate-video'; // should change this with env variable 
   private apiUrl = environment.text2signPublicURLroute; // should change this with env variable 
 
