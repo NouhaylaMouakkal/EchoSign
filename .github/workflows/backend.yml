@@ -28,16 +28,16 @@ jobs:
         docker build -t echosignregistry.azurecr.io/echosign-backend:latest ./backend
         docker push echosignregistry.azurecr.io/echosign-backend:latest
 
-    # # Step 4: Log in to Azure using Azure CLI
-    # - name: Azure Login
-    #   uses: azure/login@v1
-    #   with:
-    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+    # Step 4: Log in to Azure using Azure CLI
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # # Step 5: Deploy the Docker image to Azure App Service
-    # - name: Deploy to Azure App Service
-    #   uses: azure/webapps-deploy@v2
-    #   with:
-    #     app-name: 'echosign-backend'  # Name of your Azure App Service
-    #     slot-name: 'production'
-    #     images: 'echosignregistry.azurecr.io/echosign-backend:latest'
+    # Step 5: Deploy the Docker image to Azure App Service
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'echosign-backend'  # Name of your Azure App Service
+        slot-name: 'production'
+        images: 'echosignregistry.azurecr.io/echosign-backend:latest'
