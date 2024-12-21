@@ -1,0 +1,37 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    paths:
+      - 'frontend/**'  # Déclenchement uniquement si le frontend change
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Étape 1 : Vérifier le code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Étape 2 : Se connecter à Azure Container Registry
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: echosignregistry.azurecr.io
+        username: ${{ secrets.AZURE_ACR_USERNAME }}
+        password: ${{ secrets.AZURE_ACR_PASSWORD }}
+
+    # Étape 3 : Construire et Pousser l'image Docker
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t echosignregistry.azurecr.io/echosign-frontend:latest ./frontend
+        docker push echosignregistry.azurecr.io/echosign-frontend:latest
+
+    # Étape 4 : Déployer sur Azure App Service
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'echosign-frontend'
+        slot-name: 'production'
+        images: 'echosignregistry.azurecr.io/echosign-frontend:latest'
