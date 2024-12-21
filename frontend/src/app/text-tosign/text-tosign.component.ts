@@ -59,8 +59,8 @@ export class TextTosignComponent {
 
   async startVoiceRecognition() {
     try {
-      const text = await this.speechRecognitionService.recognizeSpeech();
-      this.messageContent = text; // Display the detected speech in the input field
+      // const text = await this.speechRecognitionService.recognizeSpeech();
+      // this.messageContent = text; // Display the detected speech in the input field
     } catch (error) {
       console.error('Speech recognition failed: ', error);
     }
