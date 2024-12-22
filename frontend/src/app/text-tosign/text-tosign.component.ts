@@ -70,6 +70,21 @@ export class TextTosignComponent {
     }
   }
 
+  refreshVideo(videoUrl: string) {
+    // Set the component property to the new URL
+    this.videoSrc = videoUrl;
+  
+    // Get a reference to the <video> element
+    const vidElem = this.videoPlayer?.nativeElement;
+  
+    if (vidElem) {
+      // Reload and optionally play the video
+      vidElem.load();
+      vidElem.play();
+    }
+  }
+  
+
   // Example method if you re-introduce speech recognition:
   async startVoiceRecognition() {
     try {
