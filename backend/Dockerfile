@@ -13,11 +13,14 @@ RUN apt-get update && apt-get install -y \
 # Step 4: Copy application files to the container
 COPY . /app
 
+# Step 4.1: Create a folder where we will store generated videos
+RUN mkdir -p /app/videos
+
 # Step 5: Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Step 6: Expose the Flask application's port
 EXPOSE 2002
 
-# Step 7: Command to run the application
+# Step 7: Command to run the application (using Gunicorn)
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:2002", "app:app"]
