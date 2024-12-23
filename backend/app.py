@@ -7,10 +7,16 @@ import numpy as np
 import mediapipe as mp
 from tensorflow.keras.models import load_model
 from azure.storage.blob import BlobServiceClient
-import uuid
+from dotenv import load_dotenv
+
+# Charger les variables depuis le fichier .env
+load_dotenv()
 
 # Configuration pour Azure Blob Storage
-AZURE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=echosignstockage;AccountKey=x6a3mTXeqvAedtJw2M1PN6Xs3ixlvlLGYVdkQ6sv4Yb2HHIrs/iPwCC5aDXvY0AsEB5gbj/n1e/O+AStfFHfMQ==;EndpointSuffix=core.windows.net"
+AZURE_CONNECTION_STRING = os.getenv("AZURE_CONNECTION_STRING")
+if not AZURE_CONNECTION_STRING:
+    raise ValueError("La clé Azure Storage n'est pas configurée.")
+
 BLOB_CONTAINER_NAME = "videos"
 
 # Client Azure Blob Storage
