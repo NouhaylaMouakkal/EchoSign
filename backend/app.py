@@ -32,8 +32,6 @@ CORS(app)
 ##                       Text To Sign Part                     ##
 #################################################################
 
-import tempfile
-
 def afficher_alphabet(texte, target_width, target_height, delay_between_letters, req_num):
     """
     Génère une vidéo à partir du texte fourni en combinant des GIF correspondant aux lettres.
@@ -55,18 +53,21 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters,
 
         if frames:
             output_frames = [frame for frame in frames for _ in range(delay_between_letters)]
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_video:
-                out = cv2.VideoWriter(
-                    temp_video.name,
-                    cv2.VideoWriter_fourcc(*'H264'),
-                    10,
-                    (target_width, target_height)
-                )
-                for frame in output_frames:
-                    out.write(frame)
-                out.release()
-                print(f"Vidéo temporaire créée : {temp_video.name}")
-                return temp_video.name
+            
+            # Generate a unique filename
+            output_video_path = f"/mnt/videos/output_{req_num}_{uuid.uuid4().hex}.mp4"
+
+            out = cv2.VideoWriter(
+                output_video_path,
+                cv2.VideoWriter_fourcc(*'H264'),
+                10,
+                (target_width, target_height)
+            )
+            for frame in output_frames:
+                out.write(frame)
+            out.release()
+            print(f"Vidéo créée dans le répertoire monté : {output_video_path}")
+            return output_video_path
         else:
             print("Aucun frame généré, vérifiez le texte d'entrée.")
             return None
@@ -84,6 +85,9 @@ def generate_unique_name(req_num):
 
 
 def upload_to_blob(local_file_path, blob_name):
+    """
+    Téléverse un fichier local vers Azure Blob Storage et retourne son URL publique.
+    """
     try:
         container_client = blob_service_client.get_container_client(BLOB_CONTAINER_NAME)
 
@@ -102,6 +106,7 @@ def upload_to_blob(local_file_path, blob_name):
     except Exception as e:
         print(f"Erreur lors du téléversement vers Azure Blob Storage : {e}")
         return None
+
 
 
 
@@ -129,19 +134,19 @@ def generate_video():
 
         print(f"Received request to generate video: texte='{texte}', target_width={target_width}, target_height={target_height}")
 
-        # Generate a unique blob name
-        blob_name = generate_unique_name(req_num)
-        print(f"Generated unique blob name: {blob_name}")
-
-        # Generate the video locally
-        local_video_path = afficher_alphabet(texte, target_width, target_height, delay_between_letters)
+        # Generate the video in the mounted directory
+        local_video_path = afficher_alphabet(texte, target_width, target_height, delay_between_letters, req_num)
         if not local_video_path:
             return jsonify({"error": "Erreur lors de la génération de la vidéo"}), 500
+
+        # Generate a unique blob name
+        blob_name = os.path.basename(local_video_path)
+        print(f"Generated unique blob name: {blob_name}")
 
         # Upload directly to Azure Blob Storage
         video_url = upload_to_blob(local_video_path, blob_name)
 
-        # Delete the local file
+        # Clean up the file in /mnt/videos (optional)
         if os.path.exists(local_video_path):
             os.remove(local_video_path)
             print(f"Deleted local video file: {local_video_path}")
@@ -153,6 +158,7 @@ def generate_video():
     except Exception as e:
         print(f"Erreur dans '/generate-video': {e}")
         return jsonify({"error": "Erreur serveur interne"}), 500
+
 
 
 #################################################################

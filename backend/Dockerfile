@@ -16,11 +16,7 @@ RUN apt-get update && apt-get install -y \
 # Step 4: Copy application files to the container
 COPY . /app
 
-# Ensure the 'Reverse' folder is included
-COPY Reverse /app/Reverse
-
 # Step 4.1: Create a folder where we will store generated videos
-RUN mkdir -p /app/videos
 RUN mkdir -p /mnt/videos
 
 # Step 5: Install Python dependencies
