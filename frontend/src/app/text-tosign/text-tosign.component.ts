@@ -8,78 +8,75 @@ import { SpeechRecognitionService } from "../services/speechrecognition.service"
   styleUrls: ['./text-tosign.component.css']
 })
 export class TextTosignComponent {
-
+  
   @ViewChild('videoPlayer') videoPlayer?: ElementRef<HTMLVideoElement>;
   messageContent: string = '';
   messages: string[] = [];
-  videoSrc: string = '';  // We'll set this dynamically from the backend response
+  videoSrc: string = '';
 
-  constructor(
-    private videoService: VideoService,
-    private speechRecognitionService: SpeechRecognitionService
-  ) {}
+  constructor(private videoService: VideoService) {}
 
   // Clear the conversation
-  clearchat() {
+  clearchat(): void {
     this.messages = [];
+    this.videoSrc = ''; // Reset video source
   }
 
   // Send a text message to the backend
-  sendMessage() {
-    if (this.messageContent.trim() !== '') {
-      // Append the message to our local array for display
-      this.messages.push(this.messageContent);
+  sendMessage(): void {
+    if (!this.messageContent.trim()) {
+      console.error('Message content is empty');
+      return;
+    }
 
-      // Prepare the data to send to the backend
-      const data = {
-        texte: this.messageContent,
-        target_width: 600,
-        target_height: 500,
-        delay_between_letters: 10,
-        req_num: this.messages.length
-      };
+    // Add the message to the conversation
+    this.messages.push(this.messageContent);
 
-      // Call our backend to generate the video
-      this.videoService.generateVideo(data).subscribe(
-        (response) => {
-          console.log('Video generated successfully:', response);
+    // Prepare data for the backend
+    const data = {
+      texte: this.messageContent,
+      target_width: 600,
+      target_height: 500,
+      delay_between_letters: 10,
+      req_num: this.messages.length
+    };
 
-          // The backend might respond with something like:
-          // { "video_url": "http://<backend-domain>/videos/output1.mp4" }
-          if (response.video_url) {
-            // Update our videoSrc property
-            this.videoSrc = response.video_url;
+    // Call the backend to generate the video
+    this.videoService.generateVideo(data).subscribe(
+      (response) => {
+        console.log('Video generated successfully:', response);
 
-            // Force the video element to reload and optionally start playing
-            if (this.videoPlayer?.nativeElement) {
-              const vidElem = this.videoPlayer.nativeElement;
-              vidElem.load();
-              vidElem.play();
-            }
-          } else {
-            console.error('No "video_url" found in response');
+        // Check if the backend returned a valid URL
+        if (response.video_url) {
+          this.videoSrc = response.video_url;
+
+          // Load and play the video
+          const videoElement = this.videoPlayer?.nativeElement;
+          if (videoElement) {
+            videoElement.load();
+            videoElement.play();
           }
-        },
-        (error) => {
-          console.error('Error generating video:', error);
+        } else {
+          console.error('No video URL found in the response');
         }
-      );
+      },
+      (error) => {
+        console.error('Error generating video:', error);
+      }
+    );
 
-      // Clear the input
-      this.messageContent = '';
-    }
+    // Clear the input field
+    this.messageContent = '';
   }
 
-  refreshVideo() {
-    const vidElem = this.videoPlayer?.nativeElement;
-  
-    if (vidElem) {
-      vidElem.load();
-      vidElem.play();
+  // Refresh the video player
+  refreshVideo(): void {
+    const videoElement = this.videoPlayer?.nativeElement;
+    if (videoElement) {
+      videoElement.load();
+      videoElement.play();
     }
   }
-  
-  
 
   // Example method if you re-introduce speech recognition:
   async startVoiceRecognition() {
