@@ -4,3 +4,4 @@ share
 Lib
 pyvenv
 .env
+test.py
