@@ -42,6 +42,11 @@ export class SignTotextComponent implements OnInit, OnDestroy {
     this.initializeHands();
   }
 
+  ngAfterViewInit() {
+    this.initializeHands();
+    this.initWebcam();
+  }
+  
   ngOnDestroy() {
     this.stopWebcam();
     if (this.captureTimeout) {
@@ -116,20 +121,20 @@ export class SignTotextComponent implements OnInit, OnDestroy {
         if (blob) {
           const formData = new FormData();
           formData.append('image', blob);
-          this.http.post<{ predicted_character: any }>(environment.sign2textPublicURLroute, formData).subscribe(response => {
-            this.captureInProgress = false;
-            const character = response.predicted_character.toString();
-            console.log('Predicted character:', character);
-            if (this.predictedLetter === 'Click Capture or Space or Enter to predict.') {
-              this.predictedLetter = '';
-            }
-            this.predictedLetter += character; // Append the new character
-            this.translatePrediction(this.predictedLetter);
-            this.listenToPrediction(); // Ensure audio is generated after prediction
-          }, error => {
-            this.captureInProgress = false;
-            console.error('Error during prediction:', error);
-          });
+          this.http.post<{ letters: string[] }>(environment.sign2textPublicURLroute, formData)
+            .subscribe(response => {
+              this.captureInProgress = false;
+              const character = response.letters?.[0] || ''; // Safely access the first letter
+              if (this.predictedLetter === 'Click Capture or Space or Enter to predict.') {
+                this.predictedLetter = '';
+              }
+              this.predictedLetter += character; // Append the new character
+              this.translatePrediction(this.predictedLetter);
+              this.listenToPrediction();
+            }, error => {
+              this.captureInProgress = false;
+              console.error('Error during prediction:', error);
+            });
         } else {
           this.captureInProgress = false;
         }
