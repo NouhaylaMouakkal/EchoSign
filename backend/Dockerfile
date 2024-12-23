@@ -21,6 +21,7 @@ COPY Reverse /app/Reverse
 
 # Step 4.1: Create a folder where we will store generated videos
 RUN mkdir -p /app/videos
+RUN mkdir -p /mnt/videos
 
 # Step 5: Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt

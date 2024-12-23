@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 import cv2
 import imageio
 import os
+from io import BytesIO
 from flask_cors import CORS
 import numpy as np
 import mediapipe as mp
@@ -31,6 +32,8 @@ CORS(app)
 ##                       Text To Sign Part                     ##
 #################################################################
 
+import tempfile
+
 def afficher_alphabet(texte, target_width, target_height, delay_between_letters, req_num):
     """
     Génère une vidéo à partir du texte fourni en combinant des GIF correspondant aux lettres.
@@ -52,13 +55,18 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters,
 
         if frames:
             output_frames = [frame for frame in frames for _ in range(delay_between_letters)]
-            output_video_path = f"./videos/output{req_num}.mp4"
-            out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'H264'), 10, (target_width, target_height))
-            for frame in output_frames:
-                out.write(frame)
-            out.release()
-            print(f"Vidéo créée : {output_video_path}")
-            return output_video_path
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_video:
+                out = cv2.VideoWriter(
+                    temp_video.name,
+                    cv2.VideoWriter_fourcc(*'H264'),
+                    10,
+                    (target_width, target_height)
+                )
+                for frame in output_frames:
+                    out.write(frame)
+                out.release()
+                print(f"Vidéo temporaire créée : {temp_video.name}")
+                return temp_video.name
         else:
             print("Aucun frame généré, vérifiez le texte d'entrée.")
             return None
@@ -76,26 +84,26 @@ def generate_unique_name(req_num):
 
 
 def upload_to_blob(local_file_path, blob_name):
-    """
-    Téléverse un fichier local vers Azure Blob Storage et retourne son URL publique.
-    """
     try:
         container_client = blob_service_client.get_container_client(BLOB_CONTAINER_NAME)
-        
-        # Log information about upload
-        print(f"Uploading {local_file_path} to Azure Blob {blob_name}...")
+
+        if not container_client.exists():
+            raise ValueError(f"Le conteneur '{BLOB_CONTAINER_NAME}' n'existe pas.")
+
+        print(f"Téléversement du fichier {local_file_path} > {blob_name}...")
 
         with open(local_file_path, "rb") as data:
             container_client.upload_blob(name=blob_name, data=data, overwrite=True)
 
-        # Construct blob URL
         blob_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{BLOB_CONTAINER_NAME}/{blob_name}"
-        print(f"Upload successful: {blob_url}")
+        print(f"Téléversement réussi : {blob_url}")
         return blob_url
 
     except Exception as e:
         print(f"Erreur lors du téléversement vers Azure Blob Storage : {e}")
         return None
+
+
 
 
 @app.route('/', methods=['GET'])
@@ -108,7 +116,6 @@ def test():
 
 @app.route('/generate-video', methods=['POST'])
 def generate_video():
-    print(f"AZURE_CONNECTION_STRING: {AZURE_CONNECTION_STRING}")
     try:
         data = request.json
         texte = data.get('texte', "").strip()
@@ -127,28 +134,26 @@ def generate_video():
         print(f"Generated unique blob name: {blob_name}")
 
         # Generate the video locally
-        local_video_path = afficher_alphabet(texte, target_width, target_height, delay_between_letters, req_num)
-        print(f"Generated local video path: {local_video_path}")
-
-        if local_video_path:
-            # Upload to Azure Blob Storage
-            video_url = upload_to_blob(local_video_path, blob_name)
-            print(f"Uploaded video to Azure Blob. URL: {video_url}")
-
-            # Delete the local file after upload
-            if os.path.exists(local_video_path):
-                os.remove(local_video_path)
-                print(f"Deleted local video file: {local_video_path}")
-
-            if video_url:
-                return jsonify({"video_url": video_url}), 200
-            else:
-                return jsonify({"error": "Erreur lors du téléversement de la vidéo"}), 500
-        else:
+        local_video_path = afficher_alphabet(texte, target_width, target_height, delay_between_letters)
+        if not local_video_path:
             return jsonify({"error": "Erreur lors de la génération de la vidéo"}), 500
+
+        # Upload directly to Azure Blob Storage
+        video_url = upload_to_blob(local_video_path, blob_name)
+
+        # Delete the local file
+        if os.path.exists(local_video_path):
+            os.remove(local_video_path)
+            print(f"Deleted local video file: {local_video_path}")
+
+        if video_url:
+            return jsonify({"video_url": video_url}), 200
+        else:
+            return jsonify({"error": "Erreur lors du téléversement de la vidéo"}), 500
     except Exception as e:
         print(f"Erreur dans '/generate-video': {e}")
         return jsonify({"error": "Erreur serveur interne"}), 500
+
 
 #################################################################
 ##                       Sign To Text Part                     ##
