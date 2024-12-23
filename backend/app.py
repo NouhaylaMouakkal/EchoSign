@@ -80,10 +80,18 @@ def upload_to_blob(local_file_path, blob_name):
     """
     try:
         container_client = blob_service_client.get_container_client(BLOB_CONTAINER_NAME)
+        
+        # Log information about upload
+        print(f"Uploading {local_file_path} to Azure Blob {blob_name}...")
+
         with open(local_file_path, "rb") as data:
             container_client.upload_blob(name=blob_name, data=data, overwrite=True)
+
+        # Construct blob URL
         blob_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{BLOB_CONTAINER_NAME}/{blob_name}"
+        print(f"Upload successful: {blob_url}")
         return blob_url
+
     except Exception as e:
         print(f"Erreur lors du téléversement vers Azure Blob Storage : {e}")
         return None
@@ -99,9 +107,7 @@ def test():
 
 @app.route('/generate-video', methods=['POST'])
 def generate_video():
-    """
-    Génère une vidéo à partir d'un texte et la téléverse dans Azure Blob Storage.
-    """
+    print(f"AZURE_CONNECTION_STRING: {AZURE_CONNECTION_STRING}")
     try:
         data = request.json
         texte = data.get('texte', "").strip()
@@ -113,19 +119,25 @@ def generate_video():
         delay_between_letters = data.get('delay_between_letters', 10)
         req_num = data.get('req_num', 1)
 
-        # Générer un nom unique pour la vidéo
-        blob_name = generate_unique_name(req_num)
+        print(f"Received request to generate video: texte='{texte}', target_width={target_width}, target_height={target_height}")
 
-        # Générer la vidéo localement
+        # Generate a unique blob name
+        blob_name = generate_unique_name(req_num)
+        print(f"Generated unique blob name: {blob_name}")
+
+        # Generate the video locally
         local_video_path = afficher_alphabet(texte, target_width, target_height, delay_between_letters, req_num)
+        print(f"Generated local video path: {local_video_path}")
 
         if local_video_path:
-            # Téléverser la vidéo dans Azure Blob Storage
+            # Upload to Azure Blob Storage
             video_url = upload_to_blob(local_video_path, blob_name)
+            print(f"Uploaded video to Azure Blob. URL: {video_url}")
 
-            # Supprimer la vidéo locale après téléversement
+            # Delete the local file after upload
             if os.path.exists(local_video_path):
                 os.remove(local_video_path)
+                print(f"Deleted local video file: {local_video_path}")
 
             if video_url:
                 return jsonify({"video_url": video_url}), 200
@@ -134,7 +146,7 @@ def generate_video():
         else:
             return jsonify({"error": "Erreur lors de la génération de la vidéo"}), 500
     except Exception as e:
-        print(f"Erreur dans '/generate-video' : {e}")
+        print(f"Erreur dans '/generate-video': {e}")
         return jsonify({"error": "Erreur serveur interne"}), 500
 
 #################################################################
