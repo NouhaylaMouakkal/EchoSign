@@ -4,10 +4,13 @@ FROM python:3.12-slim
 # Step 2: Set the working directory
 WORKDIR /app
 
-# Step 3: Install system dependencies required for OpenCV
+# Step 3: Install system dependencies required for OpenCV and video encoding
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
+    libx264-dev \
+    ffmpeg \
+    libavcodec-extra \
     && rm -rf /var/lib/apt/lists/*
 
 # Step 4: Copy application files to the container

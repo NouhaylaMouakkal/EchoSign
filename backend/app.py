@@ -7,6 +7,7 @@ import numpy as np
 import mediapipe as mp
 from tensorflow.keras.models import load_model
 from azure.storage.blob import BlobServiceClient
+import uuid
 from dotenv import load_dotenv
 
 # Charger les variables depuis le fichier .env
