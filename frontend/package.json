@@ -24,6 +24,7 @@
     "@mediapipe/control_utils_3d": "^0.3.1675466062",
     "@mediapipe/drawing_utils": "^0.3.1675466124",
     "@mediapipe/hands": "^0.4.1675469240",
+    "@sweetalert2/ngx-sweetalert2": "^12.4.0",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "emailjs-com": "^3.2.0",
@@ -32,7 +33,7 @@
     "ngx-webcam": "^0.4.1",
     "openai": "^4.0.0",
     "rxjs": "~7.8.0",
-    "sweetalert2": "^11.10.8",
+    "sweetalert2": "^11.15.3",
     "tslib": "^2.3.0",
     "wavesurfer.js": "^7.7.15",
     "zone.js": "~0.14.3"
