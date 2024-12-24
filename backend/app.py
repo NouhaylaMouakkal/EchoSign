@@ -127,7 +127,7 @@ def test():
 
 @app.route('/code', methods=['GET'])
 def code():
-    return jsonify({"code": "AZURE_CONNECTION_STRING"}), 200
+    return jsonify({"code": + AZURE_CONNECTION_STRING}), 200
 
 
 @app.route('/generate-video', methods=['POST'])
