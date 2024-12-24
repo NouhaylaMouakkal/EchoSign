@@ -11,7 +11,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # Copy Angular build output
-COPY --from=build /usr/src/app/dist/frontend /usr/share/nginx/html
+COPY --from=build /usr/src/app/dist/frontend/browser /usr/share/nginx/html
 
 # Copy custom Nginx configuration and entrypoint script
 COPY nginx.conf /etc/nginx/conf.d/default.conf
