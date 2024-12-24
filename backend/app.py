@@ -56,7 +56,7 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters,
             output_frames = [frame for frame in frames for _ in range(delay_between_letters)]
             
             # Generate a unique filename
-            output_video_path = f"/mnt/videos/output_{req_num}_{uuid.uuid4().hex}.avi"
+            output_video_path = f"/tmp/videos/output_{req_num}_{uuid.uuid4().hex}.avi"
 
             # Use MJPG codec for better compatibility
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
@@ -154,7 +154,7 @@ def generate_video():
         # Upload directly to Azure Blob Storage
         video_url = upload_to_blob(local_video_path, blob_name)
 
-        # Clean up the file in /mnt/videos (optional)
+        # Clean up the file in /tmp/videos (optional)
         if os.path.exists(local_video_path):
             os.remove(local_video_path)
             print(f"Deleted local video file: {local_video_path}")
