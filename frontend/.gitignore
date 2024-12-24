@@ -44,3 +44,5 @@ Thumbs.db
 
 #video output
 src/assets/videosOutput
+
+.env
