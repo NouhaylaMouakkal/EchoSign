@@ -3,5 +3,4 @@
 __pycache__/
 .git/
 Dockerfile
-.env
 logs/

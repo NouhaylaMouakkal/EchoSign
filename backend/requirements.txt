@@ -11,4 +11,5 @@ gunicorn
 tensorflow
 azure-storage-blob
 python-dotenv
+logging
 

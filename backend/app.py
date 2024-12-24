@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, send_from_directory
+import logging
 import cv2
 import imageio
 import os
@@ -55,14 +56,20 @@ def afficher_alphabet(texte, target_width, target_height, delay_between_letters,
             output_frames = [frame for frame in frames for _ in range(delay_between_letters)]
             
             # Generate a unique filename
-            output_video_path = f"/mnt/videos/output_{req_num}_{uuid.uuid4().hex}.mp4"
+            output_video_path = f"/mnt/videos/output_{req_num}_{uuid.uuid4().hex}.avi"
 
+            # Use MJPG codec for better compatibility
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
             out = cv2.VideoWriter(
                 output_video_path,
-                cv2.VideoWriter_fourcc(*'H264'),
+                fourcc,
                 10,
                 (target_width, target_height)
             )
+
+            if not out.isOpened():
+                raise ValueError("Failed to initialize VideoWriter with MJPG codec")
+            
             for frame in output_frames:
                 out.write(frame)
             out.release()
@@ -121,6 +128,7 @@ def test():
 
 @app.route('/generate-video', methods=['POST'])
 def generate_video():
+    logging.basicConfig(level=logging.DEBUG)
     try:
         data = request.json
         texte = data.get('texte', "").strip()
