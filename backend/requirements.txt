@@ -1,5 +1,4 @@
 opencv-python
-imageio
 moviepy
 mediapipe
 flask-cors
@@ -11,5 +10,6 @@ gunicorn
 tensorflow
 azure-storage-blob
 python-dotenv
-logging
+pillow
+imageio[ffmpeg]
 

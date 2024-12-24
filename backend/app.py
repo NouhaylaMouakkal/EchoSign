@@ -3,13 +3,14 @@ import logging
 import cv2
 import imageio
 import os
-from io import BytesIO
 from flask_cors import CORS
 import numpy as np
 import mediapipe as mp
 from tensorflow.keras.models import load_model
 from azure.storage.blob import BlobServiceClient
 import uuid
+import numpy as np
+from moviepy import ImageSequenceClip
 from dotenv import load_dotenv
 
 # Charger les variables depuis le fichier .env
@@ -33,53 +34,42 @@ CORS(app)
 ##                       Text To Sign Part                     ##
 #################################################################
 
+
 def afficher_alphabet(texte, target_width, target_height, delay_between_letters, req_num):
     """
-    Génère une vidéo à partir du texte fourni en combinant des GIF correspondant aux lettres.
+    Generates an MP4 video using MoviePy from alphabet GIFs corresponding to the input text.
     """
     try:
         frames = []
         for lettre in texte.lower():
             if lettre.isalpha():
-                chemin_image = f"./Reverse/{lettre}.gif"
-                if os.path.exists(chemin_image):
-                    animation = imageio.get_reader(chemin_image)
+                gif_path = f"./Reverse/{lettre}.gif"
+                if os.path.exists(gif_path):
+                    animation = imageio.get_reader(gif_path)
                     for frame in animation:
                         resized_frame = cv2.resize(np.array(frame), (target_width, target_height))
-                        frames.append(resized_frame)
+                        frames.extend([resized_frame] * delay_between_letters)  # Add frame delay
                 else:
-                    print(f"GIF introuvable pour la lettre '{lettre}'")
+                    print(f"GIF not found for letter: {lettre}")
             else:
-                print(f"Caractère non pris en charge : '{lettre}'")
+                print(f"Unsupported character: {lettre}")
 
-        if frames:
-            output_frames = [frame for frame in frames for _ in range(delay_between_letters)]
-            
-            # Generate a unique filename
-            output_video_path = f"/tmp/videos/output_{req_num}_{uuid.uuid4().hex}.avi"
-
-            # Use MJPG codec for better compatibility
-            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            out = cv2.VideoWriter(
-                output_video_path,
-                fourcc,
-                10,
-                (target_width, target_height)
-            )
-
-            if not out.isOpened():
-                raise ValueError("Failed to initialize VideoWriter with MJPG codec")
-            
-            for frame in output_frames:
-                out.write(frame)
-            out.release()
-            print(f"Vidéo créée dans le répertoire monté : {output_video_path}")
-            return output_video_path
-        else:
-            print("Aucun frame généré, vérifiez le texte d'entrée.")
+        if not frames:
+            print("No frames generated. Check the input text.")
             return None
+
+        # Generate a unique filename
+        output_video_path = f"/tmp/videos/output_{req_num}_{uuid.uuid4().hex}.mp4"
+
+        # Use MoviePy to create the video
+        clip = ImageSequenceClip(frames, fps=10)
+        clip.write_videofile(output_video_path, codec="libx264", audio=False, fps=10, preset="fast")
+
+        print(f"Video successfully created: {output_video_path}")
+        return output_video_path
+
     except Exception as e:
-        print(f"Erreur lors de la génération de la vidéo : {e}")
+        print(f"Error generating video: {e}")
         return None
 
 
@@ -115,22 +105,12 @@ def upload_to_blob(local_file_path, blob_name):
         return None
 
 
-
-
-
 @app.route('/', methods=['GET'])
 def test():
     """
     Endpoint de test pour vérifier que le backend fonctionne.
     """
     return jsonify({"message": "BACKEND WORKS"}), 200
-
-@app.route('/code', methods=['GET'])
-def code():
-    if AZURE_CONNECTION_STRING:
-        return jsonify({"code": AZURE_CONNECTION_STRING}), 200
-    else:
-        return jsonify({"error": "Azure connection string is not set"}), 500
 
 
 @app.route('/generate-video', methods=['POST'])
