@@ -127,7 +127,10 @@ def test():
 
 @app.route('/code', methods=['GET'])
 def code():
-    return jsonify({"code": + AZURE_CONNECTION_STRING}), 200
+    if AZURE_CONNECTION_STRING:
+        return jsonify({"code": AZURE_CONNECTION_STRING}), 200
+    else:
+        return jsonify({"error": "Azure connection string is not set"}), 500
 
 
 @app.route('/generate-video', methods=['POST'])
@@ -166,7 +169,7 @@ def generate_video():
         if video_url:
             return jsonify({"video_url": video_url}), 200
         else:
-            return jsonify({"error": "Erreur lors du téléversement de la vidéo"}), 500
+            return jsonify({"error": "Erreur lors du téléversement de la vidéo "}), 500
     except Exception as e:
         print(f"Erreur dans '/generate-video': {e}")
         return jsonify({"error": "Erreur serveur interne"}), 500

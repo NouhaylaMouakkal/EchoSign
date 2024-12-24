@@ -4,3 +4,4 @@ __pycache__/
 .git/
 Dockerfile
 logs/
+sign_language_detector/
