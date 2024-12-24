@@ -124,6 +124,10 @@ export class SignTotextComponent implements OnInit, OnDestroy {
           this.http.post<{ letters: string[] }>(environment.sign2textPublicURLroute, formData)
             .subscribe(response => {
               this.captureInProgress = false;
+              if (response.letters?.[0] === 'nothing') {
+                return;
+              }
+
               const character = response.letters?.[0] || ''; // Safely access the first letter
               if (this.predictedLetter === 'Click Capture or Space or Enter to predict.') {
                 this.predictedLetter = '';
